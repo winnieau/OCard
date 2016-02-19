@@ -35,14 +35,23 @@ describe Oystercard do
   end
 
   it 'can be touched in' do
+    minimum_balance = Oystercard::MINIMUM_BALANCE
+    subject.top_up(minimum_balance)
     subject.touch_in
     expect(subject).to be_in_journey
   end
 
   it 'can be touched out' do
+    minimum_balance = Oystercard::MINIMUM_BALANCE
+    subject.top_up(minimum_balance)
     subject.touch_in
     subject.touch_out
     expect(subject).not_to be_in_journey
+  end
+
+  it 'must have a minimum balance to make journey ' do
+    minimum_balance = Oystercard::MINIMUM_BALANCE
+    expect {subject.touch_in}.to raise_error "Top up in order to meet minimum balance of #{minimum_balance}"
   end
 
 end
