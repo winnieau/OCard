@@ -2,7 +2,8 @@ require 'oystercard'
 
 
 describe Oystercard do
-  let (:station){ double :station }
+  let (:entry_station){ double :entry_station }
+  let (:exit_station){ double :exit_station }
 
   it 'has a balance of zero' do
     expect(subject.balance).to eq(0)
@@ -22,7 +23,7 @@ describe Oystercard do
   end
 
   it {is_expected.to respond_to(:touch_in).with(1).argument}
-  it {is_expected.to respond_to(:touch_out)}
+  it {is_expected.to respond_to(:touch_out).with(1).argument}
   it {is_expected.to respond_to(:in_journey?)}
 
   it 'initial status is not in journey' do
@@ -32,42 +33,59 @@ describe Oystercard do
   it 'can be touched in' do
     minimum_balance = Oystercard::MINIMUM_BALANCE
     subject.top_up(minimum_balance)
-    subject.touch_in(station)
+    subject.touch_in(entry_station)
     expect(subject).to be_in_journey
   end
 
   it 'can be touched out' do
     minimum_balance = Oystercard::MINIMUM_BALANCE
     subject.top_up(minimum_balance)
-    subject.touch_in(station)
-    subject.touch_out
+    subject.touch_in(entry_station)
+    subject.touch_out(exit_station)
     expect(subject).not_to be_in_journey
   end
 
   it 'must have a minimum balance to make journey ' do
     minimum_balance = Oystercard::MINIMUM_BALANCE
-    expect {subject.touch_in(station)}.to raise_error "Top up in order to meet minimum balance of #{minimum_balance}"
+    expect {subject.touch_in(entry_station)}.to raise_error "Top up in order to meet minimum balance of #{minimum_balance}"
   end
 
   it 'expect to deduct balance when touching out' do
     minimum_charge = Oystercard::MINIMUM_CHARGE
     subject.top_up(minimum_charge)
-    subject.touch_in(station)
-    expect {subject.touch_out}.to change{subject.balance}.by(-minimum_charge)
+    subject.touch_in(entry_station)
+    expect {subject.touch_out(exit_station)}.to change{subject.balance}.by(-minimum_charge)
   end
+
+  let(:journey2){ {entry_station => nil} }
 
   it 'remembers the location where the user first touched in' do
     minimum_balance = Oystercard::MINIMUM_BALANCE
     subject.top_up(minimum_balance)
-    subject.touch_in(station)
-    expect(subject.entry_station).to eq(station)
+    subject.touch_in(entry_station)
+    expect(subject.journeys).to include journey2
   end
 
-  it 'changes entry station to nil when touched out' do
+  it 'Acknowledges when touched out' do
     minimum_balance = Oystercard::MINIMUM_BALANCE
     subject.top_up(minimum_balance)
-    subject.touch_in(station)
-    subject.touch_out
-    expect(subject.entry_station).to eq(nil)
+    subject.touch_in(entry_station)
+    subject.touch_out(exit_station)
+    expect(subject.journeys[entry_station]).not_to eq(nil)
   end
+
+  it 'has a default of no journeys made' do
+    expect(subject.journeys).to be_empty
+  end
+
+  let(:journey){ {entry_station => exit_station} }
+
+  it 'adds one journey when user has touched in and out' do
+    minimum_balance = Oystercard::MINIMUM_BALANCE
+    subject.top_up(minimum_balance)
+    subject.touch_in(entry_station)
+    subject.touch_out(exit_station)
+    expect(subject.journeys).to include journey
+  end
+
 end
