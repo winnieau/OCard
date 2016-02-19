@@ -18,14 +18,6 @@ describe Oystercard do
     expect {subject.top_up(1)}.to raise_error "Maximum balance of #{maximum_balance} exceeded"
   end
 
-  it {is_expected.to respond_to(:deduct).with(1).argument}
-
-  it 'has a balance that can be decreased' do
-    subject.top_up(1)
-    subject.deduct(1)
-    expect(subject.balance).to eq(0)
-  end
-
   it {is_expected.to respond_to(:touch_in)}
   it {is_expected.to respond_to(:touch_out)}
   it {is_expected.to respond_to(:in_journey?)}
@@ -52,6 +44,13 @@ describe Oystercard do
   it 'must have a minimum balance to make journey ' do
     minimum_balance = Oystercard::MINIMUM_BALANCE
     expect {subject.touch_in}.to raise_error "Top up in order to meet minimum balance of #{minimum_balance}"
+  end
+
+  it 'expect to deduct balance when touching out' do
+    minimum_charge = Oystercard::MINIMUM_CHARGE
+    subject.top_up(minimum_charge)
+    subject.touch_in
+    expect {subject.touch_out}.to change{subject.balance}.by(-minimum_charge)
   end
 
 end
