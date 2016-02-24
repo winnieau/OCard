@@ -4,6 +4,8 @@ require 'oystercard'
 describe Oystercard do
   let (:entry_station){ double :entry_station }
   let (:exit_station){ double :exit_station }
+  # let (:journey) {double in_journey?: true}
+
 
   it 'has a balance of zero' do
     expect(subject.balance).to eq(0)
@@ -24,11 +26,7 @@ describe Oystercard do
 
   it {is_expected.to respond_to(:touch_in).with(1).argument}
   it {is_expected.to respond_to(:touch_out).with(1).argument}
-  it {is_expected.to respond_to(:in_journey?)}
 
-  it 'initial status is not in journey' do
-    expect(subject).not_to be_in_journey
-  end
 
   it 'can be touched in' do
     minimum_balance = Oystercard::MINIMUM_BALANCE
@@ -72,10 +70,6 @@ describe Oystercard do
     subject.touch_in(entry_station)
     subject.touch_out(exit_station)
     expect(subject.journeys[entry_station]).not_to eq(nil)
-  end
-
-  it 'has a default of no journeys made' do
-    expect(subject.journeys).to be_empty
   end
 
   let(:journey){ {entry_station => exit_station} }
