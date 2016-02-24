@@ -16,4 +16,9 @@ describe Journey do
     expect(subject).to be_in_journey
   end
 
+  it 'can end a journey' do
+    subject.end("station")
+    expect(subject).not_to be_in_journey
+  end
+
 end

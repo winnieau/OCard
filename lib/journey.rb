@@ -18,4 +18,9 @@ class Journey
     journeys[entry_station] = nil
   end
 
+  def end(exit_station)
+    @exit_station = exit_station
+    journeys[entry_station] = exit_station
+  end
+
 end
