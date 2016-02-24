@@ -26,7 +26,7 @@ class Journey
     journeys[entry_station] = exit_station
   end
 
-  def fare (entry_station = false, exit_station = false)
+  def fare(entry_station = false, exit_station = false)
    ((entry_station || exit_station) == false) ? PENALTY_FARE : MINIMUM_FARE
   end
 
