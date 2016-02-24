@@ -27,11 +27,7 @@ class Journey
   end
 
   def fare (entry_station = false, exit_station = false)
-    if ((entry_station || exit_station) == false)
-      return PENALTY_FARE
-    else
-      MINIMUM_FARE
-    end
+   ((entry_station || exit_station) == false) ? PENALTY_FARE : MINIMUM_FARE
   end
 
 end

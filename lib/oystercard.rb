@@ -3,7 +3,6 @@ require_relative 'journey'
 class Oystercard
 
   attr_reader :balance, :journey
-  # attr_accessor :journeys
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
   MINIMUM_CHARGE = 1
@@ -11,7 +10,6 @@ class Oystercard
   def initialize()
     @balance = 0
     @journey = Journey.new
-    # @journeys = {}
   end
 
   def top_up(amount)
