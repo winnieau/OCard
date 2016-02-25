@@ -16,10 +16,10 @@ describe Journey do
     expect(subject).not_to be_in_journey
   end
 
-  it 'can start a journey' do
-    subject.start(entry_station)
-    expect(subject).to be_in_journey
-  end
+  # it 'can start a journey' do
+  #   subject.start(entry_station)
+  #   expect(subject).to be_in_journey
+  # end
 
   it 'can end a journey' do
     subject.end(exit_station)
