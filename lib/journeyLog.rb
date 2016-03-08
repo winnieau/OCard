@@ -14,6 +14,11 @@ class JourneyLog
     journey.start(entry_station)
   end
 
+  def end(exit_station)
+    journey.end(exit_station)
+    log_journey
+  end
+
   def in_journey?
     journey.entry_station != nil
     # journeys.length > 0 ?  @journeys[entry_station] == nil : false
