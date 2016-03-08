@@ -1,21 +1,36 @@
 class JourneyLog
 
-  attr_reader :journeys
-  attr_accessor :entry_station, :exit_station
+  attr_reader :journeys, :journey, :journey_klass
 
-  def initialize
-    @journeys = {}
-    @entry_station = entry_station
-    @exit_station = exit_station
+  def initialize(journey_klass)
+    @journeys = []
+    @journey_klass = journey_klass
+    @journey = journey_klass.new
   end
 
   def start(entry_station)
-    @entry_station = entry_station
-    journeys[entry_station] = nil
+    log_journey unless in_journey?
+    new_journey
+    journey.start(entry_station)
   end
 
   def in_journey?
-    journeys.length > 0 ?  @journeys[entry_station] == nil : false
+    journey.entry_station != nil
+    # journeys.length > 0 ?  @journeys[entry_station] == nil : false
+  end
+
+  def log_journey
+    @journeys << journey
+  end
+
+  def new_journey
+    @journey = journey_klass.new
+  end
+
+  private
+
+  def current_journey
+    @current_journey || journey_klass.new
   end
 
 end
