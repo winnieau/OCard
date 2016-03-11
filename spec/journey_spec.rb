@@ -4,6 +4,7 @@ describe Journey do
 
   let(:entry_station) {double :entry_station, zone: 1}
   let(:exit_station) {double :exit_station, zone: 2}
+  let(:entry_station2) {double :entry_station2, zone: 1}
 
 
   it 'should return minimum fare for completed journey' do
@@ -22,6 +23,12 @@ describe Journey do
     subject.start(entry_station)
     subject.end(exit_station)
     expect(subject.fare).to eq(2)
+  end
+
+  it 'calculates fare as £1 when travelling inside same zone' do
+    subject.start(entry_station)
+    subject.end(entry_station)
+    expect(subject.fare).to eq(1)
   end
 
 end

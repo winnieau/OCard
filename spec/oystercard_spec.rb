@@ -4,7 +4,7 @@ require 'oystercard'
 describe Oystercard do
   let(:entry_station) {double :entry_station, zone: 1}
   let(:exit_station) {double :exit_station, zone: 2}
-
+  let(:entry_station2) {double :entry_station2, zone: 1}
 
   it 'has a balance of zero' do
     expect(subject.balance).to eq(0)
@@ -84,6 +84,14 @@ describe Oystercard do
     subject.touch_in(entry_station)
     subject.touch_out(exit_station)
     expect(subject.balance).to eq (maximum_balance-2)
+  end
+
+  it 'calculates fare as £1 when travelling inside same zone' do
+    maximum_balance = Oystercard::MAXIMUM_BALANCE
+    subject.top_up(maximum_balance)
+    subject.touch_in(entry_station)
+    subject.touch_out(entry_station2)
+    expect(subject.balance).to eq (maximum_balance-1)
   end
 
 end
