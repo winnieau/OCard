@@ -4,7 +4,6 @@ require 'oystercard'
 describe Oystercard do
   let (:entry_station){ double :entry_station }
   let (:exit_station){ double :exit_station }
-  # let (:journey) {double in_journey?: true}
 
 
   it 'has a balance of zero' do
@@ -55,13 +54,12 @@ describe Oystercard do
     expect {subject.touch_out(exit_station)}.to change{subject.balance}.by(-minimum_charge)
   end
 
-  let(:journey2){ {entry_station => nil} }
-
-  it 'remembers the location where the user first touched in' do
+  it 'adds one journey when user has touched in and out' do
     minimum_balance = Oystercard::MINIMUM_BALANCE
     subject.top_up(minimum_balance)
     subject.touch_in(entry_station)
-    expect(subject.journeys).to include journey2
+    subject.touch_out(exit_station)
+    expect(subject.journeys[0]).to be_a Journey
   end
 
   it 'Acknowledges when touched out' do
@@ -69,17 +67,15 @@ describe Oystercard do
     subject.top_up(minimum_balance)
     subject.touch_in(entry_station)
     subject.touch_out(exit_station)
-    expect(subject.journeys[entry_station]).not_to eq(nil)
+    expect(subject.journeys[0].entry_station).not_to eq(nil)
   end
 
-  let(:journey){ {entry_station => exit_station} }
-
-  it 'adds one journey when user has touched in and out' do
+  it 'remembers the location where the user first touched in' do
     minimum_balance = Oystercard::MINIMUM_BALANCE
     subject.top_up(minimum_balance)
     subject.touch_in(entry_station)
     subject.touch_out(exit_station)
-    expect(subject.journeys).to include journey
+    expect(subject.journeys[0].entry_station).to eq entry_station
   end
 
 end

@@ -9,9 +9,10 @@ class JourneyLog
   end
 
   def start(entry_station)
-    log_journey unless in_journey?
-    new_journey
-    journey.start(entry_station)
+    if !in_journey?
+      new_journey
+      journey.start(entry_station)
+    end
   end
 
   def end(exit_station)
@@ -20,8 +21,7 @@ class JourneyLog
   end
 
   def in_journey?
-    journey.entry_station != nil
-    # journeys.length > 0 ?  @journeys[entry_station] == nil : false
+    journey.entry_station != nil && journey.exit_station == nil
   end
 
   def log_journey
