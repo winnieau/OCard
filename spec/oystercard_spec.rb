@@ -2,8 +2,8 @@ require 'oystercard'
 
 
 describe Oystercard do
-  let (:entry_station){ double :entry_station }
-  let (:exit_station){ double :exit_station }
+  let(:entry_station) {double :entry_station, zone: 1}
+  let(:exit_station) {double :exit_station, zone: 2}
 
 
   it 'has a balance of zero' do
@@ -51,7 +51,7 @@ describe Oystercard do
     minimum_charge = Oystercard::MINIMUM_CHARGE
     subject.top_up(minimum_charge)
     subject.touch_in(entry_station)
-    expect {subject.touch_out(exit_station)}.to change{subject.balance}.by(-minimum_charge)
+    expect {subject.touch_out(exit_station)}.to change{subject.balance}.by(-minimum_charge-1)
   end
 
   it 'adds one journey when user has touched in and out' do
@@ -76,6 +76,14 @@ describe Oystercard do
     subject.touch_in(entry_station)
     subject.touch_out(exit_station)
     expect(subject.journeys[0].entry_station).to eq entry_station
+  end
+
+  it 'should should charge £2 if travelling between 2 zones' do
+    maximum_balance = Oystercard::MAXIMUM_BALANCE
+    subject.top_up(maximum_balance)
+    subject.touch_in(entry_station)
+    subject.touch_out(exit_station)
+    expect(subject.balance).to eq (maximum_balance-2)
   end
 
 end

@@ -8,12 +8,20 @@ describe Journey do
 
   it 'should return minimum fare for completed journey' do
     minimum_fare = Journey::MINIMUM_FARE
-    expect(subject.fare(entry_station, exit_station)).to eq(minimum_fare)
+    subject.start(entry_station)
+    subject.end(entry_station)
+    expect(subject.fare).to eq(minimum_fare)
   end
 
   it 'should give penalty fare if entry_station or exit_station is missing' do
     penalty_fare = Journey::PENALTY_FARE
-    expect(subject.fare()).to eq(penalty_fare)
+    expect(subject.fare).to eq(penalty_fare)
+  end
+
+  it 'calculates fare as £2 when travelling between 2 zones' do
+    subject.start(entry_station)
+    subject.end(exit_station)
+    expect(subject.fare).to eq(2)
   end
 
 end

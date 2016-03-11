@@ -18,8 +18,12 @@ class Journey
     @exit_station = exit_station
   end
 
-  def fare(entry_station = false, exit_station = false)
-   ((entry_station || exit_station) == false) ? PENALTY_FARE : MINIMUM_FARE
+  def fare
+   ((entry_station || exit_station) == nil) ? PENALTY_FARE : calculate_fare(entry_station, exit_station)
+  end
+
+  def calculate_fare(entry_station, exit_station)
+    MINIMUM_FARE + (entry_station.zone - exit_station.zone).abs
   end
 
 end
